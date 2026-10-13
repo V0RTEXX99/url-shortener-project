@@ -37,6 +37,7 @@ public class ShortUrlService {
         shortUrl.setShortKey(shortKey);
         shortUrl.setCreatedBy(null);
         shortUrl.setIsPrivate(false);
+        shortUrl.setClickCount(0L);
         shortUrl.setExpiresAt(Instant.now().plus(30, ChronoUnit.DAYS));
         shortUrl.setCreatedAt(Instant.now());
         shortUrlRepository.save(shortUrl);
