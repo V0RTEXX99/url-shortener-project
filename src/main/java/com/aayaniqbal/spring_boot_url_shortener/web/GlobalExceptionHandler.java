@@ -17,4 +17,10 @@ public class GlobalExceptionHandler {
         return "error/404";
     }
 
+    @ExceptionHandler(Exception.class)
+    String handleException(Exception ex) {
+        log.error("Unhandled Exception: {}", ex.getMessage(), ex);
+        return "error/500";
+    }
+
 }
