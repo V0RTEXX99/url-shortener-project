@@ -1,5 +1,6 @@
 package com.aayaniqbal.spring_boot_url_shortener.web.controllers;
 
+import com.aayaniqbal.spring_boot_url_shortener.ApplicationProperties;
 import com.aayaniqbal.spring_boot_url_shortener.domain.entities.ShortUrl;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.CreateShortUrlCmd;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.ShortUrlDto;
@@ -20,9 +21,11 @@ import java.util.List;
 public class HomeController {
 
     private final ShortUrlService shortUrlService;
+    private final ApplicationProperties properties;
 
-    public HomeController(ShortUrlService shortUrlService) {
+    public HomeController(ShortUrlService shortUrlService, ApplicationProperties properties) {
         this.shortUrlService = shortUrlService;
+        this.properties = properties;
     }
 
     @GetMapping("/")
@@ -31,7 +34,7 @@ public class HomeController {
         List<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls();
 
         model.addAttribute("shortUrls", shortUrls );
-        model.addAttribute("baseUrl", "http://localhost:8081");
+        model.addAttribute("baseUrl", properties.baseUrl());
         model.addAttribute("createShortUrlForm", new CreateShortUrlForm(""));
         return "index";
     }
@@ -49,7 +52,7 @@ public class HomeController {
         if(bindingResult.hasErrors()) {
             List<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls();
             model.addAttribute("shortUrls", shortUrls );
-            model.addAttribute("baseUrl", "http://localhost:8081");
+            model.addAttribute("baseUrl", properties.baseUrl());
             return "index";
         }
 
@@ -57,7 +60,7 @@ public class HomeController {
 
             CreateShortUrlCmd cmd = new CreateShortUrlCmd(form.originalUrl());
             ShortUrlDto shortUrlDto = shortUrlService.createShortUrl(cmd);
-            redirectAttributes.addFlashAttribute("successMessage", "Short URL created successfully " + "http://localhost:8081/s/" + shortUrlDto.shortKey());
+            redirectAttributes.addFlashAttribute("successMessage", "Short URL created successfully " + properties.baseUrl() + "/s/" + shortUrlDto.shortKey());
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create short URL");

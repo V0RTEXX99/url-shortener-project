@@ -1,5 +1,6 @@
 package com.aayaniqbal.spring_boot_url_shortener.domain.services;
 
+import com.aayaniqbal.spring_boot_url_shortener.ApplicationProperties;
 import com.aayaniqbal.spring_boot_url_shortener.domain.entities.ShortUrl;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.CreateShortUrlCmd;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.ShortUrlDto;
@@ -16,10 +17,12 @@ public class ShortUrlService {
 
     private final ShortUrlRepository shortUrlRepository;
     private final EntityMapper entityMapper;
+    private final ApplicationProperties properties;
 
-    public ShortUrlService(ShortUrlRepository shortUrlRepository, EntityMapper entityMapper) {
+    public ShortUrlService(ShortUrlRepository shortUrlRepository, EntityMapper entityMapper, ApplicationProperties properties) {
         this.shortUrlRepository = shortUrlRepository;
         this.entityMapper = entityMapper;
+        this.properties = properties;
     }
 
     public List<ShortUrlDto> findAllPublicShortUrls() {
@@ -31,6 +34,13 @@ public class ShortUrlService {
 
     public ShortUrlDto createShortUrl(CreateShortUrlCmd cmd) {
 
+        if(properties.validateOriginalUrl()) {
+            boolean urlExists = UrlExistenceValidator.isUrlExists(cmd.originalUrl());
+            if(!urlExists) {
+                throw new RuntimeException("Invalid URL " + cmd.originalUrl());
+            }
+        }
+
         String shortKey = generateUniqueShortKey();
         ShortUrl shortUrl = new ShortUrl();
         shortUrl.setOriginalUrl(cmd.originalUrl());
@@ -38,7 +48,7 @@ public class ShortUrlService {
         shortUrl.setCreatedBy(null);
         shortUrl.setIsPrivate(false);
         shortUrl.setClickCount(0L);
-        shortUrl.setExpiresAt(Instant.now().plus(30, ChronoUnit.DAYS));
+        shortUrl.setExpiresAt(Instant.now().plus(properties.defaultExpiryInDays(), ChronoUnit.DAYS));
         shortUrl.setCreatedAt(Instant.now());
         shortUrlRepository.save(shortUrl);
         return entityMapper.toShortUrlDto(shortUrl);
