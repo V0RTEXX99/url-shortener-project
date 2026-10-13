@@ -79,4 +79,18 @@ public class ShortUrlService {
         return sb.toString();
     }
 
+    public Optional<ShortUrlDto> accessShortUrl(String shortKey) {
+
+        Optional<ShortUrl> shortUrlOptional = shortUrlRepository.findByShortKey(shortKey);
+
+        if(shortUrlOptional.isEmpty()) {
+            return Optional.empty();
+        }
+        ShortUrl shortUrl = shortUrlOptional.get();
+        if(shortUrl.getExpiresAt() != null && shortUrl.getExpiresAt().isBefore(Instant.now())) {
+            return Optional.empty();
+        }
+        return shortUrlOptional.map(entityMapper::toShortUrlDto);
+
+    }
 }
