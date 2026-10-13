@@ -6,6 +6,7 @@ import com.aayaniqbal.spring_boot_url_shortener.domain.models.CreateShortUrlCmd;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.ShortUrlDto;
 import com.aayaniqbal.spring_boot_url_shortener.domain.repositories.ShortUrlRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -13,6 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ShortUrlService {
 
     private final ShortUrlRepository shortUrlRepository;
@@ -32,6 +34,7 @@ public class ShortUrlService {
                 .toList();
     }
 
+    @Transactional
     public ShortUrlDto createShortUrl(CreateShortUrlCmd cmd) {
 
         if(properties.validateOriginalUrl()) {
