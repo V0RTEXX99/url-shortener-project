@@ -1,6 +1,7 @@
 package com.aayaniqbal.spring_boot_url_shortener.web.controllers;
 
 import com.aayaniqbal.spring_boot_url_shortener.domain.entities.ShortUrl;
+import com.aayaniqbal.spring_boot_url_shortener.domain.models.CreateShortUrlCmd;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.ShortUrlDto;
 import com.aayaniqbal.spring_boot_url_shortener.domain.services.ShortUrlService;
 import com.aayaniqbal.spring_boot_url_shortener.web.dtos.CreateShortUrlForm;
@@ -52,9 +53,17 @@ public class HomeController {
             return "index";
         }
 
-        //TODO; implement logic
+        try {
 
-        redirectAttributes.addFlashAttribute("successMessage", "Short URL created successfully");
+            CreateShortUrlCmd cmd = new CreateShortUrlCmd(form.originalUrl());
+            ShortUrlDto shortUrlDto = shortUrlService.createShortUrl(cmd);
+            redirectAttributes.addFlashAttribute("successMessage", "Short URL created successfully " + "http://localhost:8081/s/" + shortUrlDto.shortKey());
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create short URL");
+        }
+
+
         return "redirect:/";
 
     }
