@@ -23,6 +23,9 @@ spring:
     user:
       name: ${SECURITY_USERNAME:user}
       password: ${SECURITY_PASSWORD:password123}
+      roles:
+        - USER
+        - ADMIN
 server:
   port: ${SERVER_PORT:8080}
 
