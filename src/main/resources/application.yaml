@@ -19,6 +19,10 @@ spring:
   docker:
     compose:
       lifecycle-management: start_only
+  security:
+    user:
+      name: ${SECURITY_USERNAME:user}
+      password: ${SECURITY_PASSWORD:password123}
 server:
   port: ${SERVER_PORT:8080}
 
