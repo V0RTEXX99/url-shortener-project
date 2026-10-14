@@ -39,9 +39,8 @@ public class ShortUrlService {
     public ShortUrlDto createShortUrl(CreateShortUrlCmd cmd) {
 
         if(properties.validateOriginalUrl()) {
-            boolean urlExists = UrlExistenceValidator.isUrlExists(cmd.originalUrl());
-            if(!urlExists) {
-                throw new RuntimeException("Invalid URL " + cmd.originalUrl());
+            if (!UrlExistenceValidator.isValidUrl(cmd.originalUrl())) {
+                throw new IllegalArgumentException("Invalid URL format");
             }
         }
 

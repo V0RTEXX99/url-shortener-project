@@ -26,4 +26,18 @@ public class UrlExistenceValidator {
             return false; // URL is invalid or not reachable
         }
     }
+
+    public static boolean isValidUrl(String urlString) {
+        try {
+            URI uri = new URI(urlString);
+
+            return uri.isAbsolute()
+                    && ("http".equalsIgnoreCase(uri.getScheme())
+                    || "https".equalsIgnoreCase(uri.getScheme()))
+                    && uri.getHost() != null
+                    && uri.getHost().contains(".");
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

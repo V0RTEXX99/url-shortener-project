@@ -8,6 +8,8 @@ import com.aayaniqbal.spring_boot_url_shortener.domain.models.ShortUrlDto;
 import com.aayaniqbal.spring_boot_url_shortener.domain.services.ShortUrlService;
 import com.aayaniqbal.spring_boot_url_shortener.web.dtos.CreateShortUrlForm;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @Controller
 public class HomeController {
 
+    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
     private final ShortUrlService shortUrlService;
     private final ApplicationProperties properties;
 
@@ -66,6 +69,7 @@ public class HomeController {
             redirectAttributes.addFlashAttribute("successMessage", "Short URL created successfully " + properties.baseUrl() + "/s/" + shortUrlDto.shortKey());
 
         } catch (Exception e) {
+            log.error("Failed to create short URL for: {}", form.originalUrl(), e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create short URL");
         }
 
