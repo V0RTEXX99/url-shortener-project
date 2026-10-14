@@ -2,6 +2,7 @@ package com.aayaniqbal.spring_boot_url_shortener.web.controllers;
 
 import com.aayaniqbal.spring_boot_url_shortener.ApplicationProperties;
 import com.aayaniqbal.spring_boot_url_shortener.domain.entities.ShortUrl;
+import com.aayaniqbal.spring_boot_url_shortener.domain.entities.User;
 import com.aayaniqbal.spring_boot_url_shortener.domain.exceptions.ShortUrlNotFoundException;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.CreateShortUrlCmd;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.ShortUrlDto;
@@ -28,14 +29,18 @@ public class HomeController {
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
     private final ShortUrlService shortUrlService;
     private final ApplicationProperties properties;
+    private final SecurityUtils securityUtils;
 
-    public HomeController(ShortUrlService shortUrlService, ApplicationProperties properties) {
+    public HomeController(ShortUrlService shortUrlService, ApplicationProperties properties, SecurityUtils securityUtils) {
         this.shortUrlService = shortUrlService;
         this.properties = properties;
+        this.securityUtils = securityUtils;
     }
 
     @GetMapping("/")
     public String home(Model model) {
+
+        User user = securityUtils.getCurrentUser();
 
         List<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls();
 
