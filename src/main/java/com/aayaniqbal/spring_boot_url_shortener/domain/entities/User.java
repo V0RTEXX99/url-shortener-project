@@ -1,5 +1,6 @@
 package com.aayaniqbal.spring_boot_url_shortener.domain.entities;
 
+import com.aayaniqbal.spring_boot_url_shortener.domain.models.Role;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -24,7 +25,8 @@ public class User {
 
     @ColumnDefault("'ROLE_USER'")
     @Column(name = "role", nullable = false, length = 20)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false)
@@ -62,11 +64,11 @@ public class User {
         this.name = name;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

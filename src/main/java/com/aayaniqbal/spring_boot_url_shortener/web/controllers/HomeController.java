@@ -91,4 +91,9 @@ public class HomeController {
 
     }
 
+    @GetMapping("/login")
+    public String loginForm() {
+        return "login";
+    }
+
 }
