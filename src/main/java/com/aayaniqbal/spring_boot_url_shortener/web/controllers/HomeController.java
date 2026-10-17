@@ -41,10 +41,8 @@ public class HomeController {
             Model model
     ) {
 
-        PagedResult<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls(page, properties.pageSize());
+        this.addShortUrlsDataToModel(model, page);
 
-        model.addAttribute("shortUrls", shortUrls );
-        model.addAttribute("baseUrl", properties.baseUrl());
         model.addAttribute(
                 "createShortUrlForm",
                 new CreateShortUrlForm("", false, null)
@@ -63,9 +61,7 @@ public class HomeController {
     ) {
 
         if(bindingResult.hasErrors()) {
-            PagedResult<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls(1, properties.pageSize());
-            model.addAttribute("shortUrls", shortUrls );
-            model.addAttribute("baseUrl", properties.baseUrl());
+            this.addShortUrlsDataToModel(model, 1);
             return "index";
         }
 
@@ -109,6 +105,17 @@ public class HomeController {
     @GetMapping("/login")
     public String loginForm() {
         return "login";
+    }
+
+
+
+    private void addShortUrlsDataToModel(
+            Model model,
+            int pageNo
+    ) {
+        PagedResult<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls(pageNo, properties.pageSize());
+        model.addAttribute("shortUrls", shortUrls );
+        model.addAttribute("baseUrl", properties.baseUrl());
     }
 
 }
