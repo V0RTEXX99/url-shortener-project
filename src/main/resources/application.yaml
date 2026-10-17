@@ -34,3 +34,4 @@ app:
   base-url: http://localhost:8081
   default-expiry-in-days: 30
   validate-original-url: true
+  page-size: 10

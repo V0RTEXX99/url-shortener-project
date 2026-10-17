@@ -5,6 +5,7 @@ import com.aayaniqbal.spring_boot_url_shortener.domain.entities.ShortUrl;
 import com.aayaniqbal.spring_boot_url_shortener.domain.entities.User;
 import com.aayaniqbal.spring_boot_url_shortener.domain.exceptions.ShortUrlNotFoundException;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.CreateShortUrlCmd;
+import com.aayaniqbal.spring_boot_url_shortener.domain.models.PagedResult;
 import com.aayaniqbal.spring_boot_url_shortener.domain.models.ShortUrlDto;
 import com.aayaniqbal.spring_boot_url_shortener.domain.services.ShortUrlService;
 import com.aayaniqbal.spring_boot_url_shortener.web.dtos.CreateShortUrlForm;
@@ -14,10 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -38,9 +36,12 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(Model model) {
+    public String home(
+            @RequestParam(defaultValue = "1") Integer page,
+            Model model
+    ) {
 
-        List<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls();
+        PagedResult<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls(page, properties.pageSize());
 
         model.addAttribute("shortUrls", shortUrls );
         model.addAttribute("baseUrl", properties.baseUrl());
@@ -62,7 +63,7 @@ public class HomeController {
     ) {
 
         if(bindingResult.hasErrors()) {
-            List<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls();
+            PagedResult<ShortUrlDto> shortUrls = shortUrlService.findAllPublicShortUrls(1, properties.pageSize());
             model.addAttribute("shortUrls", shortUrls );
             model.addAttribute("baseUrl", properties.baseUrl());
             return "index";
