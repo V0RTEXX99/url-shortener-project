@@ -12,6 +12,7 @@ import com.aayaniqbal.spring_boot_url_shortener.web.dtos.CreateShortUrlForm;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -121,6 +122,7 @@ public class HomeController {
     }
 
     @PostMapping("/delete-urls")
+    //@PreAuthorize("isAuthenticated()")
     public String deleteUrls(
             @RequestParam(value = "ids", required = false) List<Long> ids,
             RedirectAttributes redirectAttributes
