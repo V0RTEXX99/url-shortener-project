@@ -1,6 +1,7 @@
 package com.aayaniqbal.spring_boot_url_shortener.domain.repositories;
 
 import com.aayaniqbal.spring_boot_url_shortener.domain.entities.ShortUrl;
+import org.apache.el.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -19,4 +20,12 @@ public interface ShortUrlRepository extends JpaRepository<ShortUrl, Long> {
     boolean existsByShortKey(String shortKey);
 
     Optional<ShortUrl> findByShortKey(String shortKey);
+
+    Page<ShortUrl> findByCreatedById(Long userId, Pageable pageable);
+
+    void deleteByIdInAndCreatedById(List<Long> ids, Long userId);
+
+    @Query("select u from ShortUrl u left join fetch u.createdBy")
+    Page<ShortUrl> findAllShortUrls(Pageable pageable);
+
 }
