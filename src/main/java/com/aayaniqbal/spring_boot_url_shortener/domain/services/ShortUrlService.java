@@ -133,4 +133,10 @@ public class ShortUrlService {
         page = page > 1 ? page-1 : 0;
         return PageRequest.of(page, pageSize, Sort.Direction.DESC, "createdAt");
     }
+
+    public void deleteUserShortUrls(List<Long> ids, Long userId) {
+        if(ids != null && !ids.isEmpty() && userId != null) {
+            shortUrlRepository.deleteByIdInAndCreatedById(ids, userId);
+        }
+    }
 }

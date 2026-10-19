@@ -109,8 +109,8 @@ public class HomeController {
 
     @GetMapping("/my-urls")
     public String showUserUrls(
-        @RequestParam(defaultValue = "1") int page,
-        Model model
+            @RequestParam(defaultValue = "1") int page,
+            Model model
     ) {
         Long currentUserId = securityUtils.getCurrentUserId();
         PagedResult<ShortUrlDto> myUrls = shortUrlService.getUserShortUrls(currentUserId, page, properties.pageSize());
@@ -118,6 +118,27 @@ public class HomeController {
         model.addAttribute("baseUrl", properties.baseUrl());
         model.addAttribute("paginationUrl", "/my-urls");
         return "my-urls";
+    }
+
+    @PostMapping("/delete-urls")
+    public String deleteUrls(
+            @RequestParam(value = "ids", required = false) List<Long> ids,
+            RedirectAttributes redirectAttributes
+    ) {
+        if(ids == null || ids.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "No URLs selected for deletion");
+            return "redirect:/my-urls";
+        }
+
+        try {
+            Long currentUserId = securityUtils.getCurrentUserId();
+            shortUrlService.deleteUserShortUrls(ids, currentUserId);
+            redirectAttributes.addFlashAttribute("successMessage", "Selected URLs have been deleted successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting URLs: " + e.getMessage());
+        }
+
+        return "redirect:/my-urls";
     }
 
     private void addShortUrlsDataToModel(
