@@ -42,7 +42,7 @@ public class HomeController {
     ) {
 
         this.addShortUrlsDataToModel(model, page);
-
+        model.addAttribute("paginationUrl", "/");
         model.addAttribute(
                 "createShortUrlForm",
                 new CreateShortUrlForm("", false, null)
@@ -116,6 +116,7 @@ public class HomeController {
         PagedResult<ShortUrlDto> myUrls = shortUrlService.getUserShortUrls(currentUserId, page, properties.pageSize());
         model.addAttribute("shortUrls", myUrls);
         model.addAttribute("baseUrl", properties.baseUrl());
+        model.addAttribute("paginationUrl", "/my-urls");
         return "my-urls";
     }
 
