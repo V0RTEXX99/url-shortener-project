@@ -1,0 +1,28 @@
+name: url-shortener-deployment
+
+services:
+  postgres:
+    image: 'postgres:17'
+    container_name: 'url-shortener-prod-db'
+    environment:
+      - 'POSTGRES_DB=${DB_NAME}'
+      - 'POSTGRES_USER=${DB_USERNAME}'
+      - 'POSTGRES_PASSWORD=${DB_PASSWORD}'
+      - 'TZ=Asia/Kolkata'
+      - 'PGTZ=Asia/Kolkata'
+    ports:
+      - '${DB_PORT:-5433}:5432'
+
+  spring-boot-url-shortener:
+    image: aayaniqbal/spring-boot-url-shortener
+    container_name: spring-boot-url-shortener
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      TZ: Asia/Kolkata
+    ports:
+      - '${SERVER_PORT:-8081}:8081'
+    restart: unless-stopped
+    depends_on:
+      - postgres
